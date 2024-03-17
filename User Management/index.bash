@@ -22,28 +22,28 @@ add_user() {
     echo "Enter First Name: "
     read first_name
 
-    # אמת את השם הפרטי (לא אמור להכיל מספרים)
-    if [[ "$first_name" =~ [0-9] ]]; then
-        echo "Error: First name should not contain numbers."
-        return
-    fi
+    # אמת את השם הפרטי (לא אמור להכיל מספרים וסימנים)
+    if [[ ! "$first_name" =~ ^[[:alpha:]'-']+$ ]]; then
+    echo "Error: First name should only contain letters and hyphens."
+    return
+fi
 
     echo "Enter Last Name: "
     read last_name
 
-    # אמת את השם משפחה (לא אמור להכיל מספרים)
-    if [[ "$last_name" =~ [0-9] ]]; then
-        echo "Error: Last name should not contain numbers."
-        return
-    fi
+    # אמת את השם משפחה (לא אמור להכיל מספרים וסימנים)
+   if [[ ! "$last_name" =~ ^[[:alpha:]'-']+$ ]]; then
+    echo "Error: Last name should only contain letters and hyphens."
+    return
+fi
 
     echo "Enter ID Card: "
     read id_card
 
     
-# אימות תעודת זהות (צריך להכיל מספרים בלבד)
-    if ! [[ "$id_card" =~ ^[0-9]+$ ]]; then
-        echo "Error: ID card should contain only numeric characters."
+# אימות תעודת זהות (צריך להכיל מספרים בלבד מחייב 9 ספרות)
+    if ! [[ "$id_card" =~ ^[0-9]{9}$ ]]; then
+        echo "Error: ID card should contain at least 9 numeric characters."
         return
     fi
 
