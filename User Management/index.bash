@@ -22,19 +22,20 @@ add_user() {
     echo "Enter First Name: "
     read first_name
 
-    # אמת את השם הפרטי (לא אמור להכיל מספרים)
-    if [[ "$first_name" =~ [0-9] ]]; then
-        echo "Error: First name should not contain numbers."
-        return
-    fi
+    # אמת את השם הפרטי (לא אמור להכיל סימנים מיוחדים)
+if [[ ! "$first_name" =~ ^[[:alpha:]]+$ ]]; then
+    echo "Error: First name should only contain letters."
+    return
+fi
 
-    echo "Enter Last Name: "
-    read last_name
+echo "Enter Last Name: "
+read last_name
 
-    # אמת את השם משפחה (לא אמור להכיל מספרים)
-    if [[ "$last_name" =~ [0-9] ]]; then
-        echo "Error: Last name should not contain numbers."
-        return
+# אמת את שם המשפחה (לא אמור להכיל סימנים מיוחדים)
+if [[ ! "$last_name" =~ ^[[:alpha:]]+$ ]]; then
+    echo "Error: Last name should only contain letters."
+    return
+
     fi
 
     echo "Enter ID Card: "
@@ -127,3 +128,4 @@ while true; do
         *) echo "Invalid choice. Please try again." ;;
     esac
 done
+
