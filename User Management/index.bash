@@ -22,20 +22,19 @@ add_user() {
     echo "Enter First Name: "
     read first_name
 
-    # אמת את השם הפרטי (לא אמור להכיל סימנים מיוחדים)
-if [[ ! "$first_name" =~ ^[[:alpha:]]+$ ]]; then
-    echo "Error: First name should only contain letters."
-    return
-fi
+    # אמת את השם הפרטי (לא אמור להכיל מספרים)
+    if [[ "$first_name" =~ [0-9] ]]; then
+        echo "Error: First name should not contain numbers."
+        return
+    fi
 
-echo "Enter Last Name: "
-read last_name
+    echo "Enter Last Name: "
+    read last_name
 
-# אמת את שם המשפחה (לא אמור להכיל סימנים מיוחדים)
-if [[ ! "$last_name" =~ ^[[:alpha:]]+$ ]]; then
-    echo "Error: Last name should only contain letters."
-    return
-
+    # אמת את השם משפחה (לא אמור להכיל מספרים)
+    if [[ "$last_name" =~ [0-9] ]]; then
+        echo "Error: Last name should not contain numbers."
+        return
     fi
 
     echo "Enter ID Card: "
@@ -90,25 +89,28 @@ search() {
     grep -i "$search_term" "$DATA_FILE"
 }
 
+
 # פונקציה למחיקת משתמש באמצעות תעודת זהות
 delete_user() {
     echo "Enter ID card of the user to delete: "
     read id_card
 
-   
-# בדוק אם המשתמש עם תעודת הזהות שצוינה קיים
+    # יצירת קובץ זמני לאחסון הנתונים לצורך עריכה
+    temp_file=$(mktemp)
+
+    # קריאת הנתונים מתוך קובץ הנתונים והעתקה לקובץ זמני
     while IFS=':' read -r fname lname card || [ -n "$fname" ]; do
+        # בדיקה אם זוהתה תעודת הזהות של המשתמש למחיקה
         if [ "$card" == "$id_card" ]; then
-           
-          # הסר את השורה המכילה את תעודת הזהות שצוינה
-            sed -i "/^$id_card:/d" "$DATA_FILE"
             echo "User with ID card $id_card deleted successfully."
-            return
+        else
+            # העתקת הנתונים שאינם נמצאים למחיקה לקובץ זמני
+            echo "$fname:$lname:$card" >> "$temp_file"
         fi
     done < "$DATA_FILE"
 
-    # אם תעודת הזהות לא נמצאה
-    echo "User with ID card $id_card not found."
+    # העתקת הנתונים מקובץ הנתונים הזמני לקובץ הנתונים
+    mv "$temp_file" "$DATA_FILE"
 }
 
 
@@ -128,4 +130,3 @@ while true; do
         *) echo "Invalid choice. Please try again." ;;
     esac
 done
-
